@@ -1,0 +1,182 @@
+{% extends 'main/base.html' %}
+{% block title %}{{ title }}{% endblock title %}
+{% block content %}
+{% if user.is_authenticated %}
+<div class="styles_listings__content__77Bve">
+
+    <div class="styles_content__right__ddauo">
+        <div class="styles_wrapper__PRxpS">
+            <div class="styles_breadcrumbs__wrapper__a3Iz7"></div>
+            <h1 class="styles_title__t0hUI">Ваши объявления</h1>
+
+        </div>
+        <div data-name="listings">
+            <div class="styles_wrapper__Td0CN">
+                <div class="styles_cards___qpff">
+
+                    {% for Product in Products %}
+                    {% with photo=Product.photo_set.first %}
+                    <section>
+                        <a class="styles_wrapper__yaLfq" href="product/{{ Product.id }}">
+                            <div class="styles_image__QXHZP">
+                                <div class="styles_container__Gcb8J">
+                                    <div class="styles_image__UV4Wa">
+                                        <div class="styles_container__9vxyc" style="padding-top:100%">
+                                            <div class="styles_image__KiLWw">
+                                                <div class="styles_container__dR7XZ">
+                                                    <img src="{{ photo.photo.url }}"
+                                                        class="styles_image__eGgZr lazyload" alt="{{ Product.name }}"
+                                                        loading="lazy">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="styles_border__4CZRX"></div>
+                                </div>
+                            </div>
+                            <div class="styles_content__BDDGV">
+                                <div class="styles_top__HNf3a">
+                                    <div>
+                                        <p class="styles_price__9JZaB"><span>{{ Product.cost }}</span><span></span></p>
+                                    </div>
+                                </div>
+                                <h3 class="styles_title__ARIVF">{{ Product.name }}</h3>
+                                <div class="styles_secondary__NEYhw">
+                                    <p>{{ Product.city }}</p><span>{{ Product.dateAdd }}</span>
+                                </div>
+                            </div>
+                        </a>
+                    </section>
+                    {% endwith %}
+                    {% endfor %}
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="styles_content__right__ddauo">
+    <div class="styles_wrapper__PRxpS">
+        <h1 class="styles_title__t0hUI">Информация о вас</h1>
+    </div>
+    <div data-name="listings">
+        <div class="styles_wrapper__Td0CN">
+            <div class="styles_cards___qpff">
+               <div id="user-info">
+    <!-- Информация о пользователе -->
+    <p><strong>Имя:</strong>
+        {% if user.first_name %}
+        {{ user.first_name }}
+        {% else %}
+        <i>нет информации...</i>
+        {% endif %}
+    </p>
+    <p><strong>Фамилия:</strong>
+        {% if user.last_name %}
+        {{ user.last_name }}
+        {% else %}
+        <i>нет информации...</i>
+        {% endif %}
+    </p>
+    <p><strong>Электронная почта:</strong>
+        {% if user.email %}
+        {{ user.email }}
+        {% else %}
+        <i>нет информации...</i>
+        {% endif %}
+    </p>
+    <p><strong>Номер телефона:</strong>
+        {% if user.phonenumber %}
+        {{ user.phonenumber }}
+        {% else %}
+        <i>нет информации...</i>
+        {% endif %}
+    </p>
+    <p><strong>Город:</strong>
+        {% if user.city %}
+        {{ user.city }}
+        {% else %}
+        <i>нет информации...</i>
+        {% endif %}
+    </p>
+    <a id="edit-profile-btn" class="btn btn-primary">Редактировать</a>
+    <a class="btn btn-danger" href="{% url 'logout' %}">Выход</a>
+</div>
+
+<div id="edit-profile-form" style="display: none;">
+    <!-- Форма редактирования профиля -->
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-error">{{user_form.first_name.errors}}</div>
+        <p><strong>{{ user_form.first_name.label}}</strong> {{ user_form.first_name }}</p>
+        <div class="form-error">{{user_form.last_name.errors}}</div>
+        <p><strong>{{ user_form.last_name.label}}</strong> {{ user_form.last_name }}</p>
+        <div class="form-error">{{user_form.email.errors}}</div>
+        <p><strong>{{ user_form.email.label}}</strong> {{ user_form.email }}</p>
+        <div class="form-error">{{user_form.phonenumber.errors}}</div>
+        <p><strong>{{ user_form.phonenumber.label}}</strong> {{ user_form.phonenumber }}</p>
+        <div class="form-error">{{user_form.adress.errors}}</div>
+        <p><strong>{{ user_form.city.label}}:</strong> {{ user_form.city }}</p>
+        <button type="submit" class="d-block text-center mb-3 btn btn-success">Сохранить</button>
+    </form>
+</div>
+<button id="edit-profile-btn" class="btn btn-primary">Редактировать</button>
+
+<div id="edit-profile-form-container"></div>
+              <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+            <script>
+    // Обработчик события клика на кнопке "Редактировать"
+    document.getElementById('edit-profile-btn').addEventListener('click', function() {
+        // Отправка Ajax запроса для получения формы редактирования
+        fetch('{% url "edit_profile_form" %}')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('edit-profile-form-container').innerHTML = data;
+            })
+            .catch(error => {
+                console.log('Ошибка:', error);
+            });
+    });
+
+    // Обработчик события отправки формы через Ajax
+    document.addEventListener('submit', function(event) {
+        if (event.target.matches('form')) {
+            event.preventDefault(); // Отменяем обычную отправку формы
+
+            const form = event.target;
+            const formData = new FormData(form);
+
+            // Отправка Ajax запроса для сохранения данных формы
+            fetch(form.action, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('edit-profile-form-container').innerHTML = data;
+            })
+            .catch(error => {
+                console.log('Ошибка:', error);
+            });
+        }
+    });
+</script>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+
+
+{% else %}
+
+<h3 class="text-center mt-3">Вы не вошли в аккаунт! <a href="{% url 'login' %}">Войти?</a></h3>
+{% endif %}
+{% endblock %}

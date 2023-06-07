@@ -1,0 +1,122 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+  <h2>Добавить продукт</h2>
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div>
+      <label for="id_maincategoryName">Основная категория:</label>
+      <select id="id_maincategoryName" name="maincategoryName">
+        <option value="">---------</option>
+        {% for maincategory in maincategories %}
+          <option value="{{ maincategory.id }}">{{ maincategory.maincategoryName }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div id="subcategory-select">
+      <label for="id_category">Подкатегория:</label>
+      <select id="id_category" name="category" disabled>
+        <option value="">---------</option>
+      </select>
+    </div>
+    <div>
+      <label for="id_name">Название:</label>
+      <input type="text" id="id_name" name="name" required>
+    </div>
+    <div>
+      <label for="id_cost">Цена:</label>
+      <input type="number" id="id_cost" name="cost" step="0.01" required>
+    </div>
+    <div>
+      <label for="id_description">Описание:</label>
+      <textarea id="id_description" name="description"></textarea>
+    </div>
+    <div>
+      <label for="id_city">Город:</label>
+      <input type="text" id="id_city" name="city">
+    </div>
+    <div>
+      <label for="id_photos">Фотографии:</label>
+      <input type="file" id="id_photos" name="photos" accept="image/*" multiple required>
+      <div id="photo-preview"></div>
+    </div>
+    <button type="submit">Добавить</button>
+  </form>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      $('#id_maincategoryName').change(function () {
+        var maincategoryId = $(this).val();
+        if (maincategoryId) {
+          $.ajax({
+            url: '/load-categories/',
+            data: {
+              'maincategoryName_id': maincategoryId
+            },
+            dataType: 'json',
+            success: function (data) {
+              var categories = data.categories;
+              var categorySelect = $('#id_category');
+              categorySelect.empty();
+              if (categories.length > 0) {
+                categorySelect.removeAttr('disabled');
+                for (var i = 0; i < categories.length; i++) {
+                  var category = categories[i];
+                  categorySelect.append($('<option>').val(category[0]).text(category[1]));
+                }
+              } else {
+                categorySelect.attr('disabled', true);
+              }
+            }
+          });
+        } else {
+          $('#id_category').empty().attr('disabled', true);
+        }
+      });
+
+      $('#id_photos').change(function () {
+        var files = Array.from(this.files);
+        var previewContainer = $('#photo-preview');
+        previewContainer.empty();
+        if (files.length > 10) {
+          alert('Максимальное количество фотографий - 10');
+          this.value = '';  // Сбросить выбранные файлы
+          return;
+        }
+        files.forEach(function (file) {
+          var reader = new FileReader();
+          reader.onload = function (e) {
+            var img = $('<img>').attr('src', e.target.result).addClass('photo-thumbnail');
+            var removeBtn = $('<button>').text('X').addClass('remove-photo');
+            var photoContainer = $('<div>').addClass('photo-container').append(img, removeBtn);
+            previewContainer.append(photoContainer);
+          };
+          reader.readAsDataURL(file);
+        });
+      });
+
+      $('#photo-preview').on('click', '.remove-photo', function () {
+        $(this).parent('.photo-container').remove();
+      });
+    });
+  </script>
+  <style>
+    .photo-thumbnail {
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+    }
+
+    .photo-container {
+      display: inline-block;
+      margin-right: 10px;
+    }
+
+    .remove-photo {
+      color: red;
+      font-weight: bold;
+      cursor: pointer;
+    }
+  </style>
+{% endblock %}

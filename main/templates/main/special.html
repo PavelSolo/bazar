@@ -1,0 +1,26 @@
+{% extends 'main/base.html' %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+
+{% if SpecialProducts  %}
+<div class="container mt-3 mb-3">
+    <a class="link h5" href="{% url 'special' %}">Специальные предложения</a>
+    <div class="row">
+        {% for SpecialProduct in SpecialProducts %}
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+            <div class="product-card">
+                <a href="product/{{ SpecialProduct.id }}"><img src="{{ SpecialProduct.photo }}" alt=""></a>
+                <span class="product-name">{{ SpecialProduct.name }}</span>
+                <div class="product-costs">
+                    <span class="product-cost">{{ SpecialProduct.costwithdiscount }} BYN</span>
+                    <span class="product-cost-discount">{{ SpecialProduct.Cost }} BYN</span>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+
+{% endblock %}

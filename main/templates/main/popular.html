@@ -1,0 +1,34 @@
+{% extends 'main/base.html' %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+
+{% if PopularProducts %}
+<div class="container mt-3 mb-3">
+    <a class="link h5" href="{% url 'popular' %}">Популярное</a>
+    <div class="row">
+        {% for PopularProduct in PopularProducts %}
+        {% if PopularProduct.costwithdiscount is not None %}
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+            <div class="product-card">
+                <a href="product/{{ PopularProduct.id }}"><img src="{{ PopularProduct.photo }}" alt=""></a>
+                <span class="product-name">{{ PopularProduct.name }}</span>
+                <div class="product-costs">
+                    <span class="product-cost">{{ PopularProduct.costwithdiscount }} BYN</span>
+                    <span class="product-cost-discount">{{ PopularProduct.Cost }} BYN</span>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+            <div class="product-card">
+                <a href="product/{{ PopularProduct.id }}"><img src="{{ PopularProduct.photo }}" alt=""></a>
+                <span class="product-name">{{ PopularProduct.name }}</span>
+                <span class="product-cost">{{ PopularProduct.Cost }} BYN</span>
+            </div>
+        </div>
+        {% endif %}
+        {% endfor %}
+    </div>
+</div>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+
+
+
+<div class="regform mt-2">
+<form method="post">
+<h1 class="regist_header">Вход</h1>
+
+    {% csrf_token %}
+     {% if form.errors %}
+      <div class="error">{{ form.errors }}</div>
+    {% endif %}
+    <p>{{ form.username }}</p>
+    <p>{{ form.password }}</p>
+    <div class="to-log-link">Нет аккаунта? <a href="{% url 'register' %}">Зарегистрироваться</a></div>
+<input class="button-reg" type="submit" placeholder="Вход">
+</form>
+</div>
+
+{% endblock %}

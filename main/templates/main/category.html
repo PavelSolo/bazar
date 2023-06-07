@@ -1,0 +1,36 @@
+{% extends 'main/base.html' %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+
+{% if allProducts %}
+    <div class="container mt-3 mb-3">
+    <a class="link h5" href="">{{ category.categoryName }}</a>
+    <div class="row">
+        {% for Products in allProducts %}
+        {% if Products.costwithdiscount is not None %}
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+            <div class="product-card">
+                {% load static %}
+                <a href="product/{{ Products.id }}"><img src="{{ Products.photo.url }}" alt=""></a>
+                <span class="product-name">{{ Products.name }}</span>
+                <div class="product-costs">
+                    <span class="product-cost">{{ Products.costwithdiscount }} BYN</span>
+                    <span class="product-cost-discount">{{ Products.Cost }} BYN</span>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+            <div class="product-card">
+                <a href="product/{{ Products.id }}"><img src="{{ Products.photo.url }}" alt=""></a>
+                <span class="product-name">{{ Products.name }}</span>
+                <span class="product-cost">{{ Products.Cost }} BYN</span>
+            </div>
+        </div>
+        {% endif %}
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+{% endblock %}

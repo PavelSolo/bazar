@@ -1,0 +1,188 @@
+  {% extends 'main/base.html' %}
+  {% block title %}{{ title }}{% endblock %}
+  {% block content %}
+<div style="display: flex">
+<swiper-container class="mySwiper" pagination="true" pagination-clickable="true" navigation="true" space-between="30" loop="true">
+    {% for photo in photos %}
+    <swiper-slide><img src="{{ photo.photo.url }}"></swiper-slide>
+
+    {% endfor %}
+
+</swiper-container>
+
+
+<div class="right_product">
+     <h1 class="styles_brief_wrapper__title__x59rm" data-name="av_title">{{ product.name }}</h1>
+    <div>
+        <span class="styles_brief_wrapper__date__FfOke">{{ product.dateAdd }},</span>
+      <span class="styles_address__fQyGA">{{ product.city }}</span>
+        <div>
+            <span class="styles_address__fQyGA">{{ product.get_quality_display  }},</span>
+            <span class="styles_address__fQyGA">{% if product.is_exchange %}Возможен обмен{% else %}Обмен не предлагать{% endif %}</span>
+        </div>
+    </div>
+ <div class="styles_container__OjHTs styles_brief_wrapper__price__V9gxE">
+     <span class="styles_main__9wZlb">{{ product.cost }} р.</span>
+ </div>
+
+
+{% if user.is_authenticated %}
+    <button class="product-button favorite-button" data-product-id="{{ product.id }}">Добавить в избранное</button>
+{% else %}
+    <a class="product-button" href="/login">Войти, чтобы добавить в избранное</a>
+{% endif %}
+
+
+
+
+</div>
+</div>
+
+
+
+
+
+    <div class="seller-block">
+      <h2 class="seller_header_2">Продавец</h2>
+
+       <div class="seller_flex">
+         <div class="seller_image_block">
+            <img src="/media/img/svg/user_avatar.svg">
+         </div>
+         <div class="seller_right">
+           <div class="styles_seller-block__top-right__lC2Lm">
+             <div class="seller_username">
+                 <a href="">{{ product.user.first_name }}</a>
+              </div>
+             <p>{{ product.user.first_name }}</p>
+             <div class="seller_contacts">
+                 {% if product.visible_phone %}
+                   <button class="modal-button product-button">Позвонить</button>
+                 {% endif %}
+              <a>Написать</a>
+             </div>
+           </div>
+         </div>
+       </div>
+    </div>
+
+
+
+<div class="styles_description__XFqmz">
+  <div data-name="description-block" class="styles_description__vsEQQ" style="max-height:144px">
+    <h2 class="styles_description__title__H_4cK">Описание</h2>
+    <div itemprop="description">{{ product.description }}<br></div>
+  </div>
+</div>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const favoriteButtons = document.querySelectorAll('.favorite-button');
+        favoriteButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const productId = button.getAttribute('data-product-id');
+                toggleFavorite(productId, button);
+            });
+        });
+    });
+
+    function toggleFavorite(productId, button) {
+        const csrftoken = getCookie('csrftoken');
+
+        fetch('/toggle-favorite/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-CSRFToken': csrftoken
+            },
+            body: `product_id=${productId}`
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.message === 'added') {
+                button.textContent = 'Удалить из избранного';
+                button.classList.add('favorited');
+            } else if (data.message === 'removed') {
+                button.textContent = 'Добавить в избранное';
+                button.classList.remove('favorited');
+            }
+        })
+        .catch(error => {
+            console.error('Произошла ошибка:', error);
+        });
+    }
+
+    // Функция для получения значения CSRF-токена из куки
+    function getCookie(name) {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) {
+            return parts.pop().split(';').shift();
+        }
+    }
+</script>
+
+{% if product.visible_phone %}
+
+
+<div class="modal-overlay">
+    <div class="modal-content">
+        <h2>Номер телефона продавца {{ product.user.first_name }}:</h2>
+        <p>{{ product.user.phonenumber }}</p>
+        <button class="modal-close product-button">Окей</button>
+    </div>
+</div>
+
+<style>
+    .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 9999;
+    }
+
+    .modal-content {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 330px;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 5px;
+    }
+     .modal-content p{
+        text-align: center;
+         margin: 5px;
+    }
+
+    .modal-close {
+        margin-top: 10px;
+        text-align: center;
+    }
+</style>
+
+<script>
+    const modalButton = document.querySelector('.modal-button');
+    const modalOverlay = document.querySelector('.modal-overlay');
+    const modalClose = document.querySelector('.modal-close');
+
+    modalButton.addEventListener('click', function() {
+        modalOverlay.style.display = 'block';
+    });
+
+    modalClose.addEventListener('click', function() {
+        modalOverlay.style.display = 'none';
+    });
+</script>
+
+{% endif %}
+
+
+
+{% endblock %}

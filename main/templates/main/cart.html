@@ -1,0 +1,70 @@
+{% extends 'main/base.html' %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+    {% if user.is_authenticated %}
+    {% if carts %}
+           <div class="styles_listings__content__77Bve">
+
+              <div class="styles_content__right__ddauo">
+                <div class="styles_wrapper__PRxpS">
+                  <div class="styles_breadcrumbs__wrapper__a3Iz7"></div>
+                  <h1 class="styles_title__t0hUI">Избранное</h1>
+                  <div class="styles_wrapper__EXbXU">
+                    <div class="styles_inner__5_Bu9">В избранном: {{ countincart }}</div>
+                  </div>
+
+                </div>
+                <div data-name="listings">
+                  <div class="styles_wrapper__Td0CN">
+                    <div class="styles_cards___qpff">
+
+                     {% for cart in carts %}
+    {% with photo=cart.Product.photo_set.first %}
+        <section>
+            <a class="styles_wrapper__yaLfq" href="product/{{ cart.Product.id }}">
+                <div class="styles_image__QXHZP">
+                    <div class="styles_container__Gcb8J">
+                        <div class="styles_image__UV4Wa">
+                            <div class="styles_container__9vxyc" style="padding-top:100%">
+                                <div class="styles_image__KiLWw">
+                                    <div class="styles_container__dR7XZ">
+                                        <img src="{{ photo.photo.url }}" class="styles_image__eGgZr lazyload" alt="{{ cart.Product.name }}" loading="lazy">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="styles_border__4CZRX"></div>
+                    </div>
+                </div>
+                <div class="styles_content__BDDGV">
+                    <div class="styles_top__HNf3a">
+                        <div>
+                            <p class="styles_price__9JZaB"><span>{{ cart.Product.cost }}</span><span></span></p>
+                        </div>
+                    </div>
+                    <h3 class="styles_title__ARIVF">{{ cart.Product.name }}</h3>
+                    <div class="styles_secondary__NEYhw">
+                        <p>{{ cart.Product.city }}</p><span>{{ cart.Product.dateAdd }}</span>
+                    </div>
+                </div>
+            </a>
+        </section>
+    {% endwith %}
+{% endfor %}
+
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+    {% else %}
+        <h3 class="text-center mt-3">Корзина пустая! <a href="{% url 'home' %}">Главная</a></h3>
+    {% endif %}
+      {% else %}
+    <h3 class="text-center mt-3">Вы не вошли в аккаунт! <a href="{% url 'login' %}">Войти?</a></h3>
+    {% endif %}
+
+{% endblock %}

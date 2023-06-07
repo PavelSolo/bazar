@@ -1,0 +1,86 @@
+{% extends 'main/base.html' %}
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="styles_container__wYL0x styles_container-children__VyrUd">
+          <div>
+            <div class="style_main_page_wrapper__JZnAW">
+              <div class="style_left_part__KUvH_">
+                <div>
+                  <div class="styles_label__nQvxm">Популярные категории</div>
+                  <div class="styles_wrapper__pc_KW styles_slider_container__WH1kX styles_right_rectangle__AS8iM">
+                    <div class="swiper">
+                      <div class="swiper-wrapper">
+
+                        <div class="swiper-slide styles_slide__iInrb"><a class="styles_element__CgYpE" id="16000" href="l/kompyuternaya-tehnika57e4.html?elementType=popular_categories"><span>Компьютерная техника</span></a><a class="styles_element__CgYpE" id="15000" href="l/bytovaya-tehnika57e4.html?elementType=popular_categories"><span>Бытовая техника</span></a><a class="styles_element__CgYpE" id="19000" href="l/muzhskoj-garderob57e4.html?elementType=popular_categories"><span>Мужской гардероб</span></a></div>
+
+
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="styles_listings__content__77Bve">
+
+              <div class="styles_content__right__ddauo">
+                <div class="styles_wrapper__PRxpS">
+                  <div class="styles_breadcrumbs__wrapper__a3Iz7"></div>
+                  <h1 class="styles_title__t0hUI">Недавние объявления</h1>
+                  <div class="styles_wrapper__EXbXU">
+                    <div class="styles_inner__5_Bu9">
+                        cdcddcscdscdscs
+                    </div>
+                  </div>
+
+                </div>
+                <div data-name="listings">
+                  <div class="styles_wrapper__Td0CN">
+                    <div class="styles_cards___qpff">
+
+                     {% for Product in Products %}
+    {% with photo=Product.photo_set.first %}
+        <section>
+            <a class="styles_wrapper__yaLfq" href="product/{{ Product.id }}">
+                <div class="styles_image__QXHZP">
+                    <div class="styles_container__Gcb8J">
+                        <div class="styles_image__UV4Wa">
+                            <div class="styles_container__9vxyc" style="padding-top:100%">
+                                <div class="styles_image__KiLWw">
+                                    <div class="styles_container__dR7XZ">
+                                        <img src="{{ photo.photo.url }}" class="styles_image__eGgZr lazyload" alt="{{ Product.name }}" loading="lazy">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="styles_border__4CZRX"></div>
+                    </div>
+                </div>
+                <div class="styles_content__BDDGV">
+                    <div class="styles_top__HNf3a">
+                        <div>
+                            <p class="styles_price__9JZaB"><span>{{ Product.cost }}</span><span></span></p>
+                        </div>
+                    </div>
+                    <h3 class="styles_title__ARIVF">{{ Product.name }}</h3>
+                    <div class="styles_secondary__NEYhw">
+                        <p>{{ Product.city }}</p><span>{{ Product.dateAdd }}</span>
+                    </div>
+                </div>
+            </a>
+        </section>
+    {% endwith %}
+{% endfor %}
+
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+{% endblock %}
+

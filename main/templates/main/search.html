@@ -1,0 +1,183 @@
+{% extends 'main/base.html' %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+
+<div class="container">
+    <div class="styles_content__right__ddauo">
+
+        <div class="row">
+            <div class="col-md-4">
+                <form class="filters" id="filter-form" action="{% url 'search' %}" method="GET">
+                    <input type="hidden" id="hidesearchbar" name="q" value="{{ query }}">
+                    <div class="cost_filter">
+                        <h2>Цена:</h2>
+                        <input type="number" name="min_price" placeholder="От"
+                            value="{{ request.GET.min_price }}"><input type="number" name="max_price" placeholder="До"
+                            value="{{ request.GET.max_price }}">
+                    </div>
+                    <h2>Состояние:</h2>
+                    <select class="quality_select" name="quality">
+                        <option value="">Все</option>
+                        <option value="new" {% if request.GET.quality == 'new' %}selected{% endif %}>Новое</option>
+                        <option value="used" {% if request.GET.quality == 'used' %}selected{% endif %}>Б/У</option>
+                    </select>
+                    <input type="checkbox" id="exchange-checkbox" name="is_exchange"
+                        {% if request.GET.is_exchange %}checked{% endif %}>
+                    <label for="exchange-checkbox">Возможен обмен</label><br>
+                    <input type="checkbox" id="has-photo-checkbox" name="has_photo"
+                        {% if request.GET.has_photo %}checked{% endif %}>
+                    <label for="has-photo-checkbox">С фото</label><br>
+
+                    <button class="find_by_filter" type="submit">Поиск</button>
+                </form>
+            </div>
+
+            <div class="col-md-8">
+
+
+
+                <div class="styles_listings__content__77Bve">
+
+                    <div class="styles_content__right__ddauo">
+                        <div class="styles_wrapper__PRxpS">
+                            <div class="styles_breadcrumbs__wrapper__a3Iz7"></div>
+                            <h1 class="styles_title__t0hUI">"{{ query }}" в Беларуси</h1>
+                            <div class="styles_wrapper__EXbXU">
+                                <div class="styles_inner__5_Bu9"></div>
+                                <form id="sort-form" action="/search/" class="sort-form" method="GET">
+                                    <input type="hidden" id="hidesearchbar" name="q" value="{{ query }}">
+                                    <input type="radio" id="sort-newest" name="sort" value="newest"
+                                        {% if request.GET.sort == 'newest' %}checked{% endif %}>
+                                    <label for="sort-newest">По новизне</label>
+                                    <input type="radio" id="sort-cheapest" name="sort" value="cheapest"
+                                        {% if request.GET.sort == 'cheapest' %}checked{% endif %}>
+                                    <label for="sort-cheapest">Сначала дешевле</label>
+                                    <input type="radio" id="sort-expensive" name="sort" value="expensive"
+                                        {% if request.GET.sort == 'expensive' %}checked{% endif %}>
+                                    <label for="sort-expensive">Сначала дороже</label>
+                                </form>
+                            </div>
+                        </div>
+                        <div data-name="listings">
+                            <div class="styles_wrapper__Td0CN">
+                                <div class="styles_cards___qpff">
+                                    {% if products %}
+                                    {% for Product in products %}
+                                    {% with photo=Product.photo_set.first %}
+                                    <section>
+                                        <a class="styles_wrapper__yaLfq" href="product/{{ Product.id }}">
+                                            <div class="styles_image__QXHZP">
+                                                <div class="styles_container__Gcb8J">
+                                                    <div class="styles_image__UV4Wa">
+                                                        <div class="styles_container__9vxyc" style="padding-top:100%">
+                                                            <div class="styles_image__KiLWw">
+                                                                <div class="styles_container__dR7XZ">
+                                                                    <img src="{{ photo.photo.url }}"
+                                                                        class="styles_image__eGgZr lazyload"
+                                                                        alt="{{ Product.name }}" loading="lazy">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="styles_border__4CZRX"></div>
+                                                </div>
+                                            </div>
+                                            <div class="styles_content__BDDGV">
+                                                <div class="styles_top__HNf3a">
+                                                    <div>
+                                                        <p class="styles_price__9JZaB">
+                                                            <span>{{ Product.cost }}</span><span></span></p>
+                                                    </div>
+                                                </div>
+                                                <h3 class="styles_title__ARIVF">{{ Product.name }}</h3>
+                                                <div class="styles_secondary__NEYhw">
+                                                    <p>{{ Product.city }}</p><span>{{ Product.dateAdd }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </section>
+                                    {% endwith %}
+                                    {% endfor %}
+
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% else %}
+                <h3 class="none-search-header">Ничего не найдено!</h3>
+                {% endif %}
+            </div>
+
+        </div>
+    </div>
+</div>
+    <style>
+        .filters {
+            padding-top: 16px;
+        }
+
+        .sort-form {
+            display: block;
+        }
+
+        .none-search-header {
+            text-align: center;
+        }
+
+        .cost_filter input {
+            background-color: #fff;
+            border-radius: 8px;
+            border: none;
+            box-shadow: inset 0 0 0 1px #d9d9d9;
+            padding: 8px 16px;
+            min-height: 40px;
+            box-sizing: border-box;
+        }
+
+        .quality_select {
+            display: block;
+            background-color: #fff;
+            border-radius: 8px;
+            border: none;
+            box-shadow: inset 0 0 0 1px #d9d9d9;
+            padding: 8px 16px;
+            min-height: 40px;
+            box-sizing: border-box;
+        }
+
+        .find_by_filter {
+            background-color: #FF2E00;
+            border-radius: 5px;
+            padding: 7px 10px 7px 10px;
+            margin-right: 5px;
+            color: white !important;
+            border: none;
+        }
+    </style>
+
+    <script>
+        // Синхронизация значения поля ввода поискового запроса
+        function editfunc() {
+            // Получаем элементы ввода по их идентификаторам
+            var input1 = document.getElementById("searchbar");
+            var input2 = document.getElementById("hidesearchbar");
+
+            // Устанавливаем значение второго ввода равным значению первого ввода
+            input2.value = input1.value;
+        }
+    </script>
+    <script>
+        const form = document.getElementById('sort-form');
+        const sortRadios = form.querySelectorAll('input[type="radio"][name="sort"]');
+
+        function handleSortChange() {
+            form.submit(); // Автоматическая отправка формы
+        }
+
+        sortRadios.forEach(radio => {
+            radio.addEventListener('change', handleSortChange);
+        });
+    </script>
+    {% endblock %}
